@@ -1,0 +1,27 @@
+services:
+  db: # Database name and this same name should be added in the application.properties as well
+    image: mysql:latest
+    restart: always
+#    environment:
+#      MYSQL_ROOT_PASSWORD: Pass@123
+    ports:
+      # <Port exposed> : <MySQL Port running inside container>
+      - '3308:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3308'
+      # Where our data will be persisted
+    volumes:
+      - my-db:/var/lib/mysql
+  app:
+    image: spring-docker-db-app:latest  # Replace with your image name
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9091:8080" # Port can be modified, now app will run at 9090 port
+    depends_on:
+      - db
+# Names our volume
+volumes:
+  my-db:
